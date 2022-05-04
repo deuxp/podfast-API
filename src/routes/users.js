@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
-module.exports = () => {
+// `db` would be the firebase
+module.exports = (db) => {
   router.get("/", (req, res) => {
     res.send("wuddup");
   });
