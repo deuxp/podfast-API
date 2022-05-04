@@ -6,18 +6,20 @@ const helmet = require("helmet");
 const cors = require("cors");
 
 const { initializeApp } = require("firebase/app");
-const { getFirestore, doc, getDoc } = require("firebase/firestore");
-// const bodyParser = require("body-parser");
-// const { Pool } = require("pg");
-// const { params } = require("./db/config");
-// const db = new Pool(params);
-// db.connect();
+const { getFirestore, doc, getDoc, collection } = require("firebase/firestore");
+const {
+  getStorage,
+  getStream,
+  getDownloadURL,
+  getMetadata,
+  ref,
+} = require("firebase/storage");
 
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // access req.body
-// app.use(bodyParser.json()); // may not need
+
 app.use(morgan("dev"));
 app.use(cors());
 app.use(helmet());
@@ -39,14 +41,47 @@ const firebaseConfig = {
   appId: process.env.APP_ID,
   measurementId: process.env.MEASUREMENT_ID,
 };
+
+/* ---------------------------- firebase services --------------------------- */
 const firebaseApp = initializeApp(firebaseConfig);
-const db = getFirestore(firebaseApp);
+const db = getFirestore(firebaseApp); // connection to the db object
+const storage = getStorage();
 
+/* -------------------------------- testGet2 -------------------------------- */
+
+const getUser = () => {
+  return new Promise((resolve, reject) => {
+    resolve(doc(db, "users", "lmKhbyqPDL4ttyTNxsM6"));
+  });
+};
+
+// step: 1 create reference
+
+//step: 2
+
+/* -------------------------------- endpoint -------------------------------- */
+// return the return of getdownloadurl
 app.get("/", (req, res) => {
-  res.send(db);
-});
+  const gsReference = ref(
+    storage,
+    "gs://podfast-432ab.appspot.com/New Recording.m4a"
+  );
 
-/* -------------------------------- firebase -------------------------------- */
+  res.send(getStream(gsReference));
+});
+// app.get("/", (req, res) => {
+//   getUser()
+//     .then((docRef) => {
+//       return getDoc(docRef);
+//     })
+//     .then((docSnap) => {
+//       res.send(docSnap.data());
+//     })
+//     .catch((e) => {
+//       res.send(e.message);
+//     });
+// });
+
 app.listen(PORT, () => {
   console.log(`Server listening on port: ${PORT}`);
 });
