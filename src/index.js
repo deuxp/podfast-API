@@ -64,10 +64,11 @@ const getUser = () => {
 app.get("/", (req, res) => {
   const gsReference = ref(
     storage,
-    "gs://podfast-432ab.appspot.com/New Recording.m4a"
+    "gs://podfast-432ab.appspot.com/recordings/dc1.mp3"
   );
-
-  res.send(getStream(gsReference));
+  getDownloadURL(gsReference).then((url) => {
+    res.send(url);
+  });
 });
 // app.get("/", (req, res) => {
 //   getUser()
