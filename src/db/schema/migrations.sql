@@ -1,7 +1,17 @@
--- DROP TABLE IF EXISTS messaages CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS minicasts CASCADE;
 
--- CREATE TABLE messages (
---     id SERIAL PRIMARY KEY NOT NULL,
---     body VARCHAR(140),
---     created_at timestamp NOT NULL DEFAULT NOW()
--- );
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  password VARCHAR(255),
+  created_at timestamp NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE minicasts (
+  id SERIAL PRIMARY KEY NOT NULL,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  audio_link VARCHAR(255) NOT NULL,
+  title VARCHAR(140),
+  created_at timestamp NOT NULL DEFAULT NOW()
+);
