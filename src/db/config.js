@@ -1,4 +1,4 @@
-// require("dotenv").config();
+require("dotenv").config();
 
 let params = {};
 if (process.env.DATABASE_URL) {
