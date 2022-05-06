@@ -5,6 +5,7 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
+const cookieSession = require("cookie-session");
 
 const { Pool } = require("pg");
 const { params } = require("./db/config");
@@ -17,6 +18,7 @@ app.use(express.static("minicasts"));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // access req.body
+app.use(cookieSession({ name: "session", secret: "pineapple" }));
 app.use(fileUpload({ createParentPath: true }));
 app.use(morgan("dev"));
 app.use(cors());
