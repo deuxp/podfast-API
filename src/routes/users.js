@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt"); // async library, so use async for post callback and await for bcrypt
 const req = require("express/lib/request");
+const jwt = require("jsonwebtoken");
 
 module.exports = (db) => {
   // testing - debugging
@@ -17,6 +18,7 @@ module.exports = (db) => {
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
       db.query(`INSERT INTO users (name, password) VALUES ($1, $2)`, [
+        // <------------- this query will change when the db is built
         name,
         hashedPassword,
       ]);
@@ -39,15 +41,26 @@ module.exports = (db) => {
           const verified = await bcrypt.compare(password, user.password); // returns boolean
           if (verified) {
             // set the session cookie or JWT
-            res.send("Succes");
+            // const accessToken = jwt.sign(
+            //   user.id,
+            //   process.env.ACCESS_TOKEN_SECRET
+            // );
+
+            res.redirect(`/users/${user.id}`);
           } else {
             res.send("no dice");
           }
         } catch (err) {
-          res.status(500).send();
+          res.status(500).send(`not verified ${name}`);
         }
       }
     );
+  });
+
+  // may have to change to GET after login form is made and using the browser to auth
+  router.post("/:id", (req, res) => {
+    req.session.user_id = req.params.id;
+    res.json({ success: "session, set" });
   });
 
   return router;
