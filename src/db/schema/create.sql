@@ -27,3 +27,41 @@ CREATE TABLE minicasts (
   active BOOLEAN DEFAULT TRUE,
   created_at timestamp NOT NULL DEFAULT NOW()
 );
+
+CREATE TABLE tags (
+  id SERIAL PRIMARY KEY NOT NULL,
+  minicast_id INTEGER REFERENCES minicasts(id) ON DELETE CASCADE,
+  tag VARCHAR(255),
+  created_at timestamp NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE minicast_tags (
+  id SERIAL PRIMARY KEY NOT NULL,
+  minicast_id INTEGER REFERENCES minicasts(id) ON DELETE CASCADE,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  created_at timestamp NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE plays (
+   id SERIAL PRIMARY KEY NOT NULL,
+   minicast_id INTEGER REFERENCES minicasts(id) ON DELETE CASCADE,
+   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+   num_of_plays INTEGER,
+   updated_at timestamp NOT NULL DEFAULT NOW(),
+   created_at timestamp NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE minicast_likes (
+   id SERIAL PRIMARY KEY NOT NULL,
+   minicast_id INTEGER REFERENCES minicasts(id) ON DELETE CASCADE,
+   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+   liked BOOLEAN DEFAULT TRUE,
+   created_at timestamp NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE followers (
+  id SERIAL PRIMARY KEY NOT NULL,
+  follower_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  followed_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  created_at timestamp NOT NULL DEFAULT NOW()
+);
