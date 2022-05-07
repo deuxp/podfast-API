@@ -5,5 +5,6 @@ VALUES
 
 INSERT INTO minicasts (user_id, audio_link, banner_link, title, description, num_of_views, length_in_seconds)
 VALUES
-(1, 'iwillnotputsecretkeysinGitHub@lessons.com', 'noatrealink.com', 'Lorem Ipsum is the title', 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout... ', 74, 10 ),
-(2, 'iwillnotputsecretkeysinGitHub@lessons.com', 'noatrealink.com', 'Lorem Ipsum is the title', 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout... ', 50, 11 );
+(1, '/assets/minicasts/This-Much-Will-Kill-You.mp3', '/assets/banners/universe.jpg', 'This amount will kill you', 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout... ', 74, 10 ),
+(1, '/assets/minicasts/This-Much-Will-Kill-You-2.mp3', '/assets/banners/animals.jpg', 'This amount will kill you part 2', 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout... ', 50, 11 ),
+(2, '/assets/minicasts/60SS-Stuttering.mp3', 'assets/banners/universe.jpg', '60 Second Science', 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout... ', 50, 11 );
