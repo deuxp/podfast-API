@@ -3,7 +3,11 @@ const router = express.Router();
 
 module.exports = (db) => {
   router.get("/", (_req, res) => {
-    const Q = `SELECT * FROM messages`;
+    const Q = `SELECT minicasts.id, audio_link, banner_link, title, description, minicasts.created_at, user_id, avatar_link, handle
+    FROM minicasts
+    JOIN users ON minicasts.user_id = users.id
+    ORDER BY minicasts.created_at DESC
+    limit 10`;
 
     db.query(Q)
       .then((data) => {
