@@ -63,5 +63,20 @@ module.exports = (db) => {
     res.json({ success: "session, set" });
   });
 
+  router.get(
+    "/:id/dasboard",
+    (req, res) => {
+      //TODO remove hard code and use session id
+      const { id } = req.params;
+      console.log("the session id is the user: ", id);
+      const Q = `SELECT minicasts.id, user_id, audio_link, banner_link, title, description, minicasts.active, minicasts.created_at
+    FROM minicasts
+    JOIN users ON minicasts.user_id = users.id
+    WHERE user_id = $1
+    ORDER BY minicasts.created_at DESC;`;
+    },
+    ["1"] // session ID goes here
+  );
+
   return router;
 };
