@@ -5,9 +5,10 @@ VALUES
 
 INSERT INTO minicasts (user_id, audio_link, banner_link, title, description, num_of_views, length_in_seconds)
 VALUES
-(1, '/assets/minicasts/This-Much-Will-Kill-You.mp3', '/assets/banners/universe.jpg', 'This amount will kill you', 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout... ', 74, 10 ),
-(1, '/assets/minicasts/This-Much-Will-Kill-You-2.mp3', '/assets/banners/animals.jpg', 'This amount will kill you part 2', 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout... ', 50, 11 ),
-(2, '/assets/minicasts/60SS-Stuttering.mp3', 'assets/banners/universe.jpg', '60 Second Science', 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout... ', 50, 11 );
+(1, 'https://www2.cs.uic.edu/~i101/SoundFiles/gettysburg.wav', 'https://images.unsplash.com/photo-1511649475669-e288648b2339?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1932&q=80', 'The Gettysburg Address', 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout... ', 322, 17 ),
+(1, 'https://www2.cs.uic.edu/~i101/SoundFiles/PinkPanther30.wav', 'https://images.unsplash.com/photo-1513151233558-d860c5398176?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80', 'Pink Panther theme', 'A mild distraction for your day... ', 1000, 30 ),
+(2, 'https://www2.cs.uic.edu/~i101/SoundFiles/taunt.wav', 'https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80', 'The Taunting', 'Monty Python rules', 50, 4 ),
+(2, 'https://www2.cs.uic.edu/~i101/SoundFiles/preamble.wav', 'https://images.unsplash.com/photo-1437419764061-2473afe69fc2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1632&q=80', 'We the people', 'A series of american greats', 180, 19 );
 
 INSERT INTO tags (tag)
 VALUES
@@ -17,13 +18,17 @@ VALUES
 ('news'),
 ('lifestyle'),
 ('trailers'),
-('comedy');
+('comedy'),
+('history');
 
 INSERT INTO minicast_tags (minicast_id, tag_id)
 VALUES
-(1, 1),
-(1, 7),
-(2, 1),
-(2, 2),
-(3, 1), 
-(3, 3);
+(1, 8),
+(1, 3),
+(2, 7),
+(2, 5),
+(3, 2),
+(3, 5), 
+(3, 7),
+(4, 8),
+(4, 3);
