@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 module.exports = (db) => {
   // testing - debugging
   router.get("/", (req, res) => {
+    console.log("-----------------------\n\n", req.body);
     db.query(`SELECT * FROM users;`).then((users) => {
       res.json(users.rows);
     });
@@ -58,25 +59,32 @@ module.exports = (db) => {
   });
 
   // may have to change to GET after login form is made and using the browser to auth
-  router.post("/:id", (req, res) => {
+  router.get("/monday", (req, res) => {
     req.session.user_id = req.params.id;
     res.json({ success: "session, set" });
   });
 
-  router.get(
-    "/:id/dasboard",
-    (req, res) => {
-      //TODO remove hard code and use session id
-      const { id } = req.params;
-      console.log("the session id is the user: ", id);
-      const Q = `SELECT minicasts.id, user_id, audio_link, banner_link, title, description, minicasts.active, minicasts.created_at
+  router.get("/dashboard", (req, res) => {
+    const { id } = req.params;
+    console.log("the session id is the user: ", id);
+
+    //TODO remove hard code and use session id
+    const Q = `SELECT minicasts.id, user_id, audio_link, banner_link, title, description, minicasts.active, minicasts.created_at
     FROM minicasts
     JOIN users ON minicasts.user_id = users.id
-    WHERE user_id = $1
+    WHERE user_id = 1
     ORDER BY minicasts.created_at DESC;`;
-    },
-    ["1"] // session ID goes here
-  );
+    db.query(Q)
+      .then((data) => {
+        const casts = data.rows;
+        // console.log(casts);
+        res.json(casts);
+      })
+      .catch((e) => {
+        console.log("query did not work", e.message);
+        res.send("query did not work");
+      });
+  });
 
   return router;
 };
