@@ -59,7 +59,7 @@ module.exports = (db) => {
   });
 
   // may have to change to GET after login form is made and using the browser to auth
-  router.get("/monday", (req, res) => {
+  router.post("/:id", (req, res) => {
     req.session.user_id = req.params.id;
     res.json({ success: "session, set" });
   });
