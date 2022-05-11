@@ -19,30 +19,16 @@ module.exports = (db) => {
   });
 
   router.post("/upload", (req, res) => {
-    try {
-      if (!req.files) {
-        res.send({
-          status: false,
-          message: "No minicast uploaded",
-        });
-      } else {
-        let minicast = req.files.minicast; // name of input field
-        // .mv() method to move the file to elsewhere on the server
-        minicast.mv(`./public/minicasts/${minicast.name}`); // uuid for storing purposes, also puts this in the mincast insert - uuid path
-        console.log(minicast.name);
-        res.send({
-          status: true,
-          message: "File is uploaded",
-          data: {
-            name: minicast.name,
-            mimetype: minicast.mimetype,
-            size: minicast.size,
-          },
-        });
+    const { bannerURL, minicastURL, title, description } = req.body; //TODO user_id is hardcoded as 1
+    const user_id = "1";
+    const Q = `INSERT INTO minicasts (user_id, audio_link, banner_link, title, description)
+    VALUES ($1, $2, $3, $4, $5)`;
+    console.log("\n\n\n", title);
+    db.query(Q, [user_id, minicastURL, bannerURL, title, description]).then(
+      () => {
+        res.status(201).send("Ay ok!");
       }
-    } catch (err) {
-      res.status(500).send(err);
-    }
+    );
   });
 
   return router;
