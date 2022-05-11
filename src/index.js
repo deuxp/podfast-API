@@ -2,10 +2,17 @@ require("dotenv").config();
 const PORT = process.env.PORT || 8080;
 const express = require("express");
 const morgan = require("morgan");
-const helmet = require("helmet");
+// const helmet = require("helmet");
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const cookieSession = require("cookie-session");
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const { Pool } = require("pg");
 const { params } = require("./db/config");
@@ -13,16 +20,16 @@ const db = new Pool(params);
 db.connect();
 
 const app = express();
-// app.use(express.static("public"));
-app.use(express.static("minicasts"));
+// console.log(__dirname);
+app.use(express.static("public"));
 
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // access req.body
 app.use(cookieSession({ name: "session", secret: "pineapple" }));
 app.use(fileUpload({ createParentPath: true }));
 app.use(morgan("dev"));
-app.use(cors());
-app.use(helmet());
+// app.use(helmet());
 
 /* --------------------------------- ROUTES --------------------------------- */
 const minicasts = require("./routes/minicasts");
