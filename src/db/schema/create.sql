@@ -22,8 +22,8 @@ CREATE TABLE users (
 CREATE TABLE minicasts (
   id SERIAL PRIMARY KEY NOT NULL,
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-  audio_link VARCHAR(2083) NOT NULL,
-  banner_link VARCHAR(2083) NOT NULL,
+  audio_link VARCHAR(2083),
+  banner_link VARCHAR(2083),
   title VARCHAR(255),
   description TEXT,
   num_of_views INTEGER,
