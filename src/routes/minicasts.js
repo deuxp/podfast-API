@@ -31,5 +31,13 @@ module.exports = (db) => {
     );
   });
 
+  router.delete("/:id/destroy", (req, res) => {
+    const { id } = req.params;
+    const Q = `DELETE FROM minicasts
+    WHERE id = $1;`;
+    db.query(Q, [id]).then(() => {});
+    res.json({ status: 204, statusText: `minicast #${id} is destroyed` });
+  });
+
   return router;
 };
