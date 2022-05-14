@@ -26,6 +26,7 @@ CREATE TABLE minicasts (
   banner_link VARCHAR(2083),
   title VARCHAR(255),
   description TEXT,
+  category VARCHAR(255),
   num_of_views INTEGER,
   length_in_seconds INTEGER,
   transcription TEXT,
@@ -35,6 +36,7 @@ CREATE TABLE minicasts (
 
 CREATE TABLE tags (
   id SERIAL PRIMARY KEY NOT NULL,
+  minicast_id INTEGER REFERENCES minicasts(id) ON DELETE CASCADE,
   tag VARCHAR(255),
   created_at timestamp NOT NULL DEFAULT NOW()
 );
