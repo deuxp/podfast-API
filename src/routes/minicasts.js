@@ -19,16 +19,21 @@ module.exports = (db) => {
   });
 
   router.post("/upload", (req, res) => {
-    const { bannerURL, minicastURL, title, description } = req.body; //TODO user_id is hardcoded as 1
+    const { bannerURL, minicastURL, title, description, category } = req.body; //TODO user_id is hardcoded as 1
     const user_id = "1";
-    const Q = `INSERT INTO minicasts (user_id, audio_link, banner_link, title, description)
-    VALUES ($1, $2, $3, $4, $5)`;
-    console.log("\n\n\n", title);
-    db.query(Q, [user_id, minicastURL, bannerURL, title, description]).then(
-      () => {
-        res.status(201).send("Ay ok!");
-      }
-    );
+    const Q = `INSERT INTO minicasts (user_id, audio_link, banner_link, title, description, category)
+    VALUES ($1, $2, $3, $4, $5, $6)`;
+    // console.log("\n\n\n", title);
+    db.query(Q, [
+      user_id,
+      minicastURL,
+      bannerURL,
+      title,
+      description,
+      category,
+    ]).then(() => {
+      res.status(201).send("Ay ok!");
+    });
   });
 
   router.delete("/:id/destroy", (req, res) => {
