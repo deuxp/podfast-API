@@ -31,29 +31,32 @@ module.exports = (db) => {
 
   // authentication
   router.post("/login", (req, res) => {
-    const { name, password } = req.body;
-    db.query(`SELECT * FROM users WHERE name = $1`, [name]).then(
+    const { email, password } = req.body;
+    console.log("\t\tthis is the email sent: ", email);
+    db.query(`SELECT * FROM users WHERE email = $1`, [email]).then(
       async (data) => {
         const user = data.rows[0];
+        console.log("\t\t\tuser: ", user);
         if (!user) {
           return res.send("cannot authenticate the user");
         }
-        try {
-          const verified = await bcrypt.compare(password, user.password); // returns boolean
-          if (verified) {
-            // set the session cookie or JWT
-            // const accessToken = jwt.sign(
-            //   user.id,
-            //   process.env.ACCESS_TOKEN_SECRET
-            // );
+        res.status(200).json({ user });
+        // try {
+        //   const verified = await bcrypt.compare(password, user.password); // returns boolean
+        //   if (verified) {
+        //     // set the session cookie or JWT
+        //     // const accessToken = jwt.sign(
+        //     //   user.id,
+        //     //   process.env.ACCESS_TOKEN_SECRET
+        //     // );
 
-            res.redirect(`/users/${user.id}`);
-          } else {
-            res.send("no dice");
-          }
-        } catch (err) {
-          res.status(500).send(`not verified ${name}`);
-        }
+        //     res.redirect(`/users/${user.id}`);
+        //   } else {
+        //     res.send("no dice");
+        //   }
+        // } catch (err) {
+        //   res.status(500).send(`not verified ${email}`);
+        // }
       }
     );
   });
@@ -72,7 +75,6 @@ module.exports = (db) => {
     const Q = `SELECT minicasts.id, user_id, audio_link, banner_link, title, description, minicasts.active, minicasts.created_at
     FROM minicasts
     JOIN users ON minicasts.user_id = users.id
-    WHERE user_id = 1
     ORDER BY minicasts.created_at DESC;`;
     db.query(Q)
       .then((data) => {
