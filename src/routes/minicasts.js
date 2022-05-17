@@ -58,5 +58,20 @@ module.exports = (db) => {
     res.json({ status: 204, statusText: `minicast #${id} is destroyed` });
   });
 
+  router.get("/:id", (req, res) => {
+    const { id } = req.params;
+    const Q = `SELECT minicasts.id, audio_link, banner_link, title, description, minicasts.created_at, user_id, avatar_link, handle
+    FROM minicasts
+    JOIN users ON minicasts.user_id = users.id
+    WHERE minicasts.id = $1`;
+    db.query(Q, [id]).then((data)=> {
+      return res.json(data.rows)
+    })
+    .catch((e) => {
+      res.send(e.message);
+    });
+  });
+
+
   return router;
 };
