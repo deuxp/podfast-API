@@ -28,8 +28,8 @@ module.exports = (db) => {
 
   //TODO - mucking this up ,, insert the new cast,, return id ,,, insert intot the minicast bridging table with the tag id
   router.post("/upload", (req, res) => {
-    const { bannerURL, minicastURL, title, description, tag } = req.body; //TODO user_id is hardcoded as 1
-    const user_id = "1";
+    const { bannerURL, minicastURL, title, description, tag, user_id } =
+      req.body; //TODO user_id is hardcoded as 1
     const Q = `INSERT INTO minicasts (user_id, audio_link, banner_link, title, description)
     VALUES ($1, $2, $3, $4, $5)
     RETURNING id`;
