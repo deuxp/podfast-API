@@ -33,29 +33,75 @@ module.exports = (db) => {
   router.post("/:userid/faves", (req, res) => {
     const { userid } = req.params;
     const { minicast_id, fave } = req.body;
-    const query = `INSERT INTO favourites (user_id, minicast_id, fave)
-    VALUES ($1, $2, $3)
-    RETURNING *;`;
-    db.query(query, [userid, minicast_id, fave])
-      .then((result) => {
-        console.log('THIS IS RESULT OF FAVE POST', result.rows[0])
-      })
-      .then(() => {
-        res.status(201).send("Ay ok!");
-      })
-      .catch((e) => {
-        res.status(500).send("the server crashed", e.message);
-      });
-  })
+    const test = `SELECT id from favourites 
+                  WHERE user_id = $1
+                  and minicast_id = $2;`
+    const insertQuery = `INSERT INTO favourites (user_id, minicast_id, fave)
+                   VALUES ($1, $2, $3)
+                   RETURNING *;`;
+    const updateQuery = `UPDATE favourites 
+                        SET fave = $1
+                        WHERE id = $2
+                        RETURNING *;`;
 
-  router.get("/:userid/minicasts/:minicastid/fave", (req, res) => {
-    const { userid, minicastid } = req.params;
-    const query = `SELECT fave FROM favourites
+    db.query(test, [userid, minicast_id])
+      .then((result) => {
+        let id = null;
+        if (result.rows[0]) { id = result.rows[0].id}
+        return id
+      })
+      .then((id) => {
+        if (id) {
+          db.query(updateQuery, [fave, id])
+            .then((result) => {
+              console.log('THIS IS RESULT OF FAVE POST', result.rows[0])
+            })
+            .then(() => {
+              res.status(201).send("Ay ok!");
+            })
+            .catch((e) => {
+              res.status(500).send("the server crashed", e.message);
+            })
+        }
+        else {
+          db.query(insertQuery, [userid, minicast_id, fave])
+            .then((result) => {
+              console.log('THIS IS RESULT OF FAVE POST', result.rows[0])
+            })
+            .then(() => {
+              res.status(201).send("Ay ok!");
+            })
+            .catch((e) => {
+              res.status(500).send("the server crashed", e.message);
+            })
+        }
+      })
+      });
+     
+      router.get("/:userid/minicasts/faves", (req, res) => {
+        const { userid  } = req.params;
+        const query = `SELECT * FROM favourites
+                         WHERE user_id = $1
+                         AND fave = true
+                         ORDER BY favourites.created_at DESC;`
+        db.query(query, [userid ])
+          .then((data) => {
+            console.log(data.rows)
+            return res.json(data.rows);
+          })
+          .catch((e) => {
+            res.send(e.message);
+          });
+      })
+
+router.get("/:userid/minicasts/:minicastid/fave", (req, res) => {
+  const { userid, minicastid } = req.params;
+  const query = `SELECT fave FROM favourites
                    WHERE user_id = $1
                    AND minicast_id =$2
                    ORDER BY favourites.created_at DESC
                    limit 1;`
-    db.query(query, [userid, minicastid])
+  db.query(query, [userid, minicastid])
     .then((data) => {
       console.log(data.rows)
       return res.json(data.rows);
@@ -63,66 +109,66 @@ module.exports = (db) => {
     .catch((e) => {
       res.send(e.message);
     });
-  })
+})
 
-  // authentication
-  router.post("/login", (req, res) => {
-    const { email, password } = req.body;
-    console.log("\t\tthis is the email sent: ", email);
-    db.query(`SELECT * FROM users WHERE email = $1`, [email]).then(
-      async (data) => {
-        const user = data.rows[0];
-        console.log("\t\t\tuser: ", user);
-        if (!user) {
-          return res.send("cannot authenticate the user");
-        }
-        res.status(200).json({ user });
-        // try {
-        //   const verified = await bcrypt.compare(password, user.password); // returns boolean
-        //   if (verified) {
-        //     // set the session cookie or JWT
-        //     // const accessToken = jwt.sign(
-        //     //   user.id,
-        //     //   process.env.ACCESS_TOKEN_SECRET
-        //     // );
-
-        //     res.redirect(`/users/${user.id}`);
-        //   } else {
-        //     res.send("no dice");
-        //   }
-        // } catch (err) {
-        //   res.status(500).send(`not verified ${email}`);
-        // }
+// authentication
+router.post("/login", (req, res) => {
+  const { email, password } = req.body;
+  console.log("\t\tthis is the email sent: ", email);
+  db.query(`SELECT * FROM users WHERE email = $1`, [email]).then(
+    async (data) => {
+      const user = data.rows[0];
+      console.log("\t\t\tuser: ", user);
+      if (!user) {
+        return res.send("cannot authenticate the user");
       }
-    );
-  });
+      res.status(200).json({ user });
+      // try {
+      //   const verified = await bcrypt.compare(password, user.password); // returns boolean
+      //   if (verified) {
+      //     // set the session cookie or JWT
+      //     // const accessToken = jwt.sign(
+      //     //   user.id,
+      //     //   process.env.ACCESS_TOKEN_SECRET
+      //     // );
 
-  // may have to change to GET after login form is made and using the browser to auth
-  router.post("/:id", (req, res) => {
-    req.session.user_id = req.params.id;
-    res.json({ success: "session, set" });
-  });
+      //     res.redirect(`/users/${user.id}`);
+      //   } else {
+      //     res.send("no dice");
+      //   }
+      // } catch (err) {
+      //   res.status(500).send(`not verified ${email}`);
+      // }
+    }
+  );
+});
 
-  router.get("/dashboard", (req, res) => {
-    const { id } = req.params;
-    console.log("the session id is the user: ", id);
+// may have to change to GET after login form is made and using the browser to auth
+router.post("/:id", (req, res) => {
+  req.session.user_id = req.params.id;
+  res.json({ success: "session, set" });
+});
 
-    //TODO remove hard code and use session id
-    const Q = `SELECT minicasts.id, user_id, audio_link, banner_link, title, description, minicasts.active, minicasts.created_at
+router.get("/dashboard", (req, res) => {
+  const { id } = req.params;
+  console.log("the session id is the user: ", id);
+
+  //TODO remove hard code and use session id
+  const Q = `SELECT minicasts.id, user_id, audio_link, banner_link, title, description, minicasts.active, minicasts.created_at
     FROM minicasts
     JOIN users ON minicasts.user_id = users.id
     ORDER BY minicasts.created_at DESC;`;
-    db.query(Q)
-      .then((data) => {
-        const casts = data.rows;
-        // console.log(casts);
-        res.json(casts);
-      })
-      .catch((e) => {
-        console.log("query did not work", e.message);
-        res.send("query did not work");
-      });
-  });
+  db.query(Q)
+    .then((data) => {
+      const casts = data.rows;
+      // console.log(casts);
+      res.json(casts);
+    })
+    .catch((e) => {
+      console.log("query did not work", e.message);
+      res.send("query did not work");
+    });
+});
 
-  return router;
+return router;
 };
