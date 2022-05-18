@@ -29,6 +29,42 @@ module.exports = (db) => {
     }
   });
 
+  // add favorite minicast for user
+  router.post("/:userid/faves", (req, res) => {
+    const { userid } = req.params;
+    const { minicast_id, fave } = req.body;
+    const query = `INSERT INTO favourites (user_id, minicast_id, fave)
+    VALUES ($1, $2, $3)
+    RETURNING *;`;
+    db.query(query, [userid, minicast_id, fave])
+      .then((result) => {
+        console.log('THIS IS RESULT OF FAVE POST', result.rows[0])
+      })
+      .then(() => {
+        res.status(201).send("Ay ok!");
+      })
+      .catch((e) => {
+        res.status(500).send("the server crashed", e.message);
+      });
+  })
+
+  router.get("/:userid/minicasts/:minicastid/fave", (req, res) => {
+    const { userid, minicastid } = req.params;
+    const query = `SELECT fave FROM favourites
+                   WHERE user_id = $1
+                   AND minicast_id =$2
+                   ORDER BY favourites.created_at DESC
+                   limit 1;`
+    db.query(query, [userid, minicastid])
+    .then((data) => {
+      console.log(data.rows)
+      return res.json(data.rows);
+    })
+    .catch((e) => {
+      res.send(e.message);
+    });
+  })
+
   // authentication
   router.post("/login", (req, res) => {
     const { email, password } = req.body;
