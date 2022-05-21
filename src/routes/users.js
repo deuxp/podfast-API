@@ -87,12 +87,12 @@ module.exports = (db) => {
                          ORDER BY favourites.created_at DESC
                          `;
     const query2 = `SELECT minicasts.id, audio_link, banner_link, title, description, minicasts.created_at as minicast_created_at, minicasts.user_id, avatar_link, handle, about_me, first_name, last_name, users.created_at, fave
-        FROM favourites
-        JOIN users ON favourites.user_id = users.id
-        JOIN minicasts ON minicasts.id = favourites.minicast_id
-        WHERE (favourites.user_id = $1
-        AND fave = true)
-        ORDER BY minicasts.created_at DESC`;
+    FROM minicasts
+    JOIN favourites ON minicasts.id = favourites.minicast_id
+    JOIN users ON minicasts.user_id = users.id
+    WHERE (favourites.user_id = $1
+      and fave = true)
+      ORDER BY minicasts.created_at DESC`;
     db.query(query2, [userid])
       .then((data) => {
         console.log(data.rows);
