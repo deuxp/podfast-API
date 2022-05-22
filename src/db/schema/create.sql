@@ -15,7 +15,9 @@ CREATE TABLE users (
   password VARCHAR(255),
   handle VARCHAR(255) NOT NULL,
   about_me TEXT,
-  avatar_link VARCHAR(2803) NOT NULL,
+  avatar_link VARCHAR(9999) NOT NULL,
+  twitter_link VARCHAR(99),
+  facebook_link VARCHAR(99),
   active BOOLEAN DEFAULT TRUE,
   created_at timestamp NOT NULL DEFAULT NOW()
 );

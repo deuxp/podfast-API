@@ -6,12 +6,12 @@ const jwt = require("jsonwebtoken");
 
 module.exports = (db) => {
   // testing - debugging
-  router.get("/", (req, res) => {
-    console.log("-----------------------\n\n", req.body);
-    db.query(`SELECT * FROM users;`).then((users) => {
-      res.json(users.rows);
-    });
-  });
+  // router.get("/", (req, res) => {
+  //   console.log("-----------------------\n\n", req.body);
+  //   db.query(`SELECT * FROM users;`).then((users) => {
+  //     res.json(users.rows);
+  //   });
+  // });
 
   // create user
   router.post("/", async (req, res) => {
@@ -56,7 +56,7 @@ module.exports = (db) => {
         if (id) {
           db.query(updateQuery, [fave, id])
             .then((result) => {
-              console.log("THIS IS RESULT OF FAVE POST", result.rows[0]);
+              // console.log("THIS IS RESULT OF FAVE POST", result.rows[0]);
             })
             .then(() => {
               res.status(201).send("Ay ok!");
@@ -67,7 +67,7 @@ module.exports = (db) => {
         } else {
           db.query(insertQuery, [userid, minicast_id, fave])
             .then((result) => {
-              console.log("THIS IS RESULT OF FAVE POST", result.rows[0]);
+              // console.log("THIS IS RESULT OF FAVE POST", result.rows[0]);
             })
             .then(() => {
               res.status(201).send("Ay ok!");
@@ -95,7 +95,7 @@ module.exports = (db) => {
       ORDER BY minicasts.created_at DESC`;
     db.query(query2, [userid])
       .then((data) => {
-        console.log(data.rows);
+        // console.log(data.rows);
         return res.json(data.rows);
       })
       .catch((e) => {
@@ -112,7 +112,7 @@ module.exports = (db) => {
                    limit 1;`;
     db.query(query, [userid, minicastid])
       .then((data) => {
-        console.log(data.rows);
+        // console.log(data.rows);
         return res.json(data.rows);
       })
       .catch((e) => {
@@ -123,11 +123,11 @@ module.exports = (db) => {
   // authentication
   router.post("/login", (req, res) => {
     const { email, password } = req.body;
-    console.log("\t\tthis is the email sent: ", email);
+    // console.log("\t\tthis is the email sent: ", email);
     db.query(`SELECT * FROM users WHERE email = $1`, [email]).then(
       async (data) => {
         const user = data.rows[0];
-        console.log("\t\t\tuser: ", user);
+        // console.log("\t\t\tuser: ", user);
         if (!user) {
           return res.send("cannot authenticate the user");
         }
@@ -160,7 +160,7 @@ module.exports = (db) => {
 
   router.get("/dashboard", (req, res) => {
     const { id } = req.params;
-    console.log("the session id is the user: ", id);
+    // console.log("the session id is the user: ", id);
 
     //TODO remove hard code and use session id
     const Q = `SELECT minicasts.id, user_id, audio_link, banner_link, title, description, minicasts.active, minicasts.created_at
