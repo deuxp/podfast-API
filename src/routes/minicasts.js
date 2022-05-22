@@ -3,7 +3,7 @@ const router = express.Router();
 
 module.exports = (db) => {
   router.get("/", (_req, res) => {
-    const Q = `SELECT minicasts.id, audio_link, banner_link, title, description, minicasts.created_at as minicast_created_at, user_id, avatar_link, handle, about_me, first_name, last_name, users.created_at
+    const Q = `SELECT minicasts.id, audio_link, banner_link, title, description, minicasts.created_at as minicast_created_at, user_id, avatar_link, handle, about_me, first_name, last_name, users.created_at, twitter_link, facebook_link
     FROM minicasts
     JOIN users ON minicasts.user_id = users.id
     ORDER BY minicasts.created_at DESC`;
