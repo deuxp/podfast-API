@@ -25,7 +25,7 @@ module.exports = (db) => {
     });
   });
 
-  //TODO - mucking this up ,, insert the new cast,, return id ,,, insert intot the minicast bridging table with the tag id
+  // TODO - mucking this up ,, insert the new cast,, return id ,,, insert intot the minicast bridging table with the tag id
   router.post("/upload", (req, res) => {
     const { bannerURL, minicastURL, title, description, tag, user_id } =
       req.body;
@@ -45,18 +45,15 @@ module.exports = (db) => {
       .then((data) => {
         const minicast_id = data.rows[0].id;
         if (tag) {
-          // const minicast_id = data.rows[0].id;
-          // console.log("\t\tthis is the minicast id returned: ", minicast_id);
           db.query(QQ, [minicast_id, tag]);
         }
-        console.log("~~~~> new post data, minicast_id:", minicast_id);
+        // console.log("~~~~> new post data, minicast_id:", minicast_id);
         return minicast_id;
       })
       .then((id) => {
         return db.query(Q3_get_newly_posted_minicast_data, [id]);
       })
       .then((minicast_data) => {
-        // console.log("~~~~> new post data:", minicast_data);
         res.status(201).send({ minicast_data });
       })
       .catch((e) => {
